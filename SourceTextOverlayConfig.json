@@ -1,0 +1,14 @@
+{
+    "Alignment": "BottomRight",
+    "TextColor": "0x00FFFFFF",
+    "BackgroundMode": "Transparent",
+    "BackgroundColor": "0x00000000",
+    "FaceName": "Comic Sans MS",
+    "FontSize": "60",
+    "ProportionalMode": "NonProportional",
+    "ScrollSpeed": "0",
+    "Blinking": "0,0",
+    "BlendingType": "Default",
+    //"DestinationColorKey": "0x00000000",
+    //"BlendingAlpha": 0
+}
