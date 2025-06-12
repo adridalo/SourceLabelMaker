@@ -1,9 +1,5 @@
-﻿using System.Diagnostics;
-using System.Net;
-using Newtonsoft.Json;
+﻿using System.Net;
 using Newtonsoft.Json.Linq;
-using PrimS.Telnet;
-using SourceLabelMaker;
 
 namespace SourceLabelMaker
 {
@@ -13,6 +9,7 @@ namespace SourceLabelMaker
         private static NetAPIClient _netAPIClient;
         private static async Task Main(string[] args)
         {
+            Console.Clear();
             Console.Write("Enter IP of display wall: ");
             string ip = Console.ReadLine();
 
@@ -32,6 +29,7 @@ namespace SourceLabelMaker
 
         private static async Task Run()
         {
+            Console.Clear();
             Console.WriteLine("Enter \"1\": AddSourceTextOverlay\nEnter \"2\": ClearSourceOverlay\nEnter \"3\": Edit Config\nEnter \"q\": Quit\n");
             string commandChoiceInput = Console.ReadLine();
             if (!int.TryParse(commandChoiceInput, out int commandChoice))
@@ -48,14 +46,17 @@ namespace SourceLabelMaker
             switch (commandChoice)
             {
                 case 1:
+                    Console.WriteLine("Adding text overlays...");
                     await _netAPIClient.AddSourceTextOverlay();
                     await Run();
                     break;
                 case 2:
+                    Console.WriteLine("Removing text overlays...");
                     await _netAPIClient.ClearSourceOverlay();
                     await Run();
                     break;
                 case 3:
+                    Console.Clear();
                     EditConfig();
                     await Run();
                     break;
@@ -93,59 +94,98 @@ namespace SourceLabelMaker
                     configNewValue = Console.ReadLine();
                 } while (string.IsNullOrEmpty(configNewValue));
 
-                Validate(configChoice, configNewValue);
-                SaveConfig();
+                if(Validate(configChoice, configNewValue))
+                {
+                    SaveConfig();
+                    Console.Clear();
+                    EditConfig();
+                }
+                else
+                {
+                    Console.Clear();
+                    Console.WriteLine("\nValue entered invalid...\n");
+                    EditConfig();
+                }
             }
         }
 
-        private static void Validate(int configChoice, string configNewValue)
+        private static bool Validate(int configChoice, string configNewValue)
         {
+            bool validated = false;
             switch (configChoice)
             {
                 case 1:
                     if (ConfigValidation.ValidateAlignment(configNewValue))
+                    {
                         NetAPIClient.SourceTextOverlayConfig.Properties().ElementAt(configChoice - 1).Value = configNewValue;
+                        validated = true;
+                    }
                     break;
                 case 2:
                 case 4:
                     if (ConfigValidation.ValidateColor(configNewValue))
+                    {
                         NetAPIClient.SourceTextOverlayConfig.Properties().ElementAt(configChoice - 1).Value = configNewValue;
+                        validated = true;
+                    }
                     break;
                 case 3:
                     if (ConfigValidation.ValidateBackgroundMode(configNewValue))
+                    {
                         NetAPIClient.SourceTextOverlayConfig.Properties().ElementAt(configChoice - 1).Value = configNewValue;
+                        validated = true;
+                    }
                     break;
                 case 5:
                     if (ConfigValidation.ValidateFaceName(configNewValue))
+                    {
                         NetAPIClient.SourceTextOverlayConfig.Properties().ElementAt(configChoice - 1).Value = configNewValue;
+                        validated = true;
+                    }
                     break;
                 case 6:
                     if (ConfigValidation.ValidateFontSize(configNewValue))
+                    {
                         NetAPIClient.SourceTextOverlayConfig.Properties().ElementAt(configChoice - 1).Value = configNewValue;
+                        validated = true;
+                    }
                     break;
                 case 7:
                     if (ConfigValidation.ValidateProportionalMode(configNewValue))
+                    {
                         NetAPIClient.SourceTextOverlayConfig.Properties().ElementAt(configChoice - 1).Value = configNewValue;
+                        validated = true;
+                    }
                     break;
                 case 8:
                     if (ConfigValidation.ValidateScrollSize(configNewValue))
+                    {
                         NetAPIClient.SourceTextOverlayConfig.Properties().ElementAt(configChoice - 1).Value = configNewValue;
+                        validated = true;
+                    }
                     break;
                 case 9:
                     if (ConfigValidation.ValidateBlinking(configNewValue))
+                    {
                         NetAPIClient.SourceTextOverlayConfig.Properties().ElementAt(configChoice - 1).Value = configNewValue;
+                        validated = true;
+                    }
                     break;
                 case 10:
                     if (ConfigValidation.ValidateBlendingType(configNewValue))
+                    {
                         NetAPIClient.SourceTextOverlayConfig.Properties().ElementAt(configChoice - 1).Value = configNewValue;
+                        validated = true;
+                    }
                     break;
-
             }
+            return validated;
         }
 
         private static void SaveConfig()
         {
             File.WriteAllText(NetAPIClient.ConfigFile, NetAPIClient.SourceTextOverlayConfig.ToString());
+            Console.Clear();
         }
     }
 }
