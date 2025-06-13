@@ -47,8 +47,8 @@ namespace SourceLabelMaker
             for (int i = 0; i < sourcesList.Count; i++)
             {
                 string currentSource = sourcesList[i];
-                _telnetClient.ExecuteCommand($"ClearSourceOverlay {currentSource}");
-                Thread.Sleep(250);
+                _telnetClient.ExecuteCommand($"ClearSourceOverlay \"{currentSource}\"");
+                if(_telnetClient.RetrieveResponse().Equals("Ok")) continue;
             }
         }
 
